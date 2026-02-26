@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trợ lý AI Kho Học Liệu</title>
+    <title>Trợ lý Kho Học Liệu Mầm Non</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -37,157 +37,130 @@
             display: flex;
             flex-direction: column;
             border: 1px solid var(--border);
-            position: relative;
         }
 
-        /* HEADER */
         .chat-header {
             background: linear-gradient(135deg, #4338CA 0%, #6366F1 50%, #818CF8 100%);
-            color: white; padding: 12px 16px; display: flex; align-items: center; gap: 10px;
-            flex-shrink: 0; z-index: 10;
+            color: white; padding: 14px 18px; display: flex; align-items: center; gap: 12px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         .header-avatar {
-            width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.2);
-            display: flex; align-items: center; justify-content: center; font-size: 16px;
+            width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.2);
+            display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
         }
         .header-info { flex: 1; }
-        .header-name { font-size: 0.85rem; font-weight: 700; }
-        .header-status { font-size: 0.65rem; opacity: 0.9; display: flex; align-items: center; gap: 4px; }
+        .header-name { font-size: 0.9rem; font-weight: 700; }
+        .header-status { font-size: 0.7rem; opacity: 0.9; display: flex; align-items: center; gap: 5px; }
         .status-dot { width: 6px; height: 6px; background: #86EFAC; border-radius: 50%; }
 
-        /* SETTINGS BUTTON */
-        .settings-btn {
-            background: rgba(255,255,255,0.15); border: none; color: white;
-            width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: background 0.2s;
-        }
-        .settings-btn:hover { background: rgba(255,255,255,0.25); }
-
-        /* SETTINGS PANEL */
-        #settings-panel {
-            position: absolute; top: 60px; left: 10px; right: 10px;
-            background: white; border: 1px solid var(--border); border-radius: 12px;
-            padding: 15px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-            display: none; z-index: 20; animation: fadeIn 0.2s ease;
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        .settings-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; color: var(--text-main); }
-        .api-input-group { display: flex; gap: 8px; }
-        .api-input { 
-            flex: 1; padding: 8px 12px; border: 1px solid var(--border); 
-            border-radius: 8px; font-size: 0.8rem; outline: none;
-        }
-        .save-btn { 
-            background: var(--primary); color: white; border: none; 
-            padding: 0 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer;
-        }
-
-        /* BODY */
         .chat-body {
-            flex: 1; padding: 14px; overflow-y: auto;
+            flex: 1; padding: 16px; overflow-y: auto;
             display: flex; flex-direction: column; gap: 12px; background: #F9FAFB;
         }
-        .chat-body::-webkit-scrollbar { width: 4px; }
+        .chat-body::-webkit-scrollbar { width: 5px; }
         .chat-body::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
 
-        /* MESSAGES */
         .message {
-            max-width: 90%; padding: 10px 14px; border-radius: 16px; font-size: 0.85rem;
-            line-height: 1.5; word-wrap: break-word; position: relative;
+            max-width: 90%; padding: 12px 16px; border-radius: 18px; font-size: 0.88rem;
+            line-height: 1.5; animation: popIn 0.2s ease-out; word-wrap: break-word;
         }
-        .message.bot { align-self: flex-start; background: white; color: var(--text-main); border-bottom-left-radius: 4px; border: 1px solid #F1F5F9; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        @keyframes popIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message.bot { align-self: flex-start; background: white; color: var(--text-main); border-bottom-left-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #F1F5F9; }
         .message.user { align-self: flex-end; background: var(--user-bg); color: white; border-bottom-right-radius: 4px; }
-        .message.ai-tag::before {
-            content: "AI Gemini"; position: absolute; top: -15px; left: 5px;
-            font-size: 0.65rem; font-weight: 700; color: var(--primary);
-        }
 
-        /* RESULT CARD */
         .result-card {
-            background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px;
-            padding: 10px; margin: 4px 0;
+            background: white; border: 1.5px solid #E2E8F0; border-radius: 14px;
+            padding: 14px; margin: 6px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.04);
         }
-        .result-title-text { font-weight: 700; color: var(--text-main); font-size: 0.85rem; margin-bottom: 2px; }
-        .result-category { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 8px; }
+        .result-num { font-size: 0.68rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px; }
+        .result-title-text { font-weight: 700; color: var(--text-main); font-size: 0.95rem; margin-bottom: 4px; }
+        .result-category { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px; }
+        
         .search-name-box {
-            background: #FFFBEB; border: 1px dashed #FCD34D;
-            border-radius: 6px; padding: 6px 8px; margin-bottom: 8px; font-size: 0.75rem;
+            background: #FFFBEB; border: 1.5px dashed #FCD34D;
+            border-radius: 10px; padding: 10px; margin-bottom: 12px;
+            font-size: 0.82rem; color: #713F12;
         }
-        .search-name-val { font-weight: 700; color: #92400E; display: block; }
-        .result-link { 
-            display: block; background: #16A34A; color: white; padding: 8px; 
-            border-radius: 18px; font-size: 0.75rem; font-weight: 700; 
-            text-decoration: none; text-align: center;
-        }
+        .search-name-box b { display: block; margin-bottom: 2px; color: #92400E; font-size: 0.7rem; text-transform: uppercase; }
+        .search-name-val { font-weight: 700; font-size: 0.9rem; color: #1C1917; display: block; word-break: break-all; }
 
-        /* FOOTER */
+        .step-guide { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
+        .step { display: flex; align-items: flex-start; gap: 8px; font-size: 0.8rem; color: #4B5563; }
+        .step-num { flex-shrink: 0; width: 18px; height: 18px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; margin-top: 1px; }
+
+        .result-link { 
+            display: flex; align-items: center; justify-content: center; gap: 8px; 
+            background: #16A34A; color: white; padding: 11px 20px; border-radius: 25px; 
+            font-size: 0.88rem; font-weight: 700; text-decoration: none; transition: background 0.2s;
+            box-shadow: 0 4px 10px rgba(22,163,74,0.3);
+        }
+        .result-link:hover { background: #15803D; }
+
+        /* QUICK REPLIES */
+        .quick-replies { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; }
+        .qr-btn {
+            background: white; border: 1px solid var(--primary); color: var(--primary);
+            padding: 6px 12px; border-radius: 15px; font-size: 0.8rem; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .qr-btn:hover { background: var(--primary); color: white; }
+
         .chat-footer {
-            padding: 12px; background: white; border-top: 1px solid var(--border);
-            display: flex; gap: 8px; align-items: center;
+            padding: 14px 18px; background: white;
+            border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: center;
+            flex-shrink: 0;
         }
         .chat-input {
-            flex: 1; padding: 10px 16px; border: 1px solid var(--border); border-radius: 20px;
-            font-size: 0.85rem; outline: none; background: #F3F4F6;
+            flex: 1; padding: 10px 16px; border: 1.5px solid var(--border); border-radius: 25px;
+            font-size: 0.9rem; outline: none; background: #F8FAFC; transition: all 0.2s;
         }
+        .chat-input:focus { border-color: var(--primary); background: white; }
         .send-btn {
             background: var(--primary); color: white; border: none;
-            width: 38px; height: 38px; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center; cursor: pointer;
+            width: 44px; height: 44px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; box-shadow: 0 4px 10px rgba(79,70,229,0.3);
         }
-
-        /* TYPING */
-        .typing-indicator {
-            display: none; align-self: flex-start; background: white;
-            padding: 10px 14px; border-radius: 16px; border-bottom-left-radius: 4px;
-            border: 1px solid #F1F5F9;
-        }
-        .typing-indicator span { display: inline-block; width: 5px; height: 5px; background: #9CA3AF; border-radius: 50%; margin: 0 1px; animation: bounce 1.4s infinite ease-in-out both; }
-        @keyframes bounce { 0%,80%,100% { transform: scale(0); } 40% { transform: scale(1); } }
-        
-        .ai-loading-text { font-size: 0.75rem; color: var(--primary); font-weight: 600; margin-left: 5px; }
     </style>
 </head>
 <body>
 
 <div id="chatbot-container">
     <div class="chat-header">
-        <div class="header-avatar">🤖</div>
+        <div class="header-avatar">🎓</div>
         <div class="header-info">
-            <div class="header-name">Trợ lý AI Học Liệu</div>
-            <div class="header-status"><span class="status-dot"></span> AI Gemini Sẵn sàng</div>
+            <div class="header-name">Trợ lý Kho Học Liệu</div>
+            <div class="header-status"><span class="status-dot"></span> Đang trực tuyến</div>
         </div>
-        <button class="settings-btn" onclick="toggleSettings()" title="Cài đặt API Key">
-            <svg style="width:18px;height:18px" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.35 19.43,11.03L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.97 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.97 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11.03C4.53,12.65 4.5,12.33 4.5,12C4.5,11.67 4.53,11.35 4.57,12.67L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.95C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.95L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" />
-            </svg>
-        </button>
-    </div>
-
-    <!-- Settings Panel -->
-    <div id="settings-panel">
-        <div class="settings-title">Cấu hình Gemini API Key</div>
-        <div class="api-input-group">
-            <input type="password" id="api-key-input" class="api-input" placeholder="Dán API Key tại đây...">
-            <button class="save-btn" onclick="saveApiKey()">Lưu</button>
-        </div>
-        <small style="color:red; font-size:0.7rem; margin-top:5px; display:block;">Key được lưu trong trình duyệt của bạn, không bị gửi lên GitHub.</small>
     </div>
 
     <div class="chat-body" id="chat-body">
         <div class="message bot">
-            👋 Chào mừng bạn! Tôi có thể tìm tài liệu trong kho và trả lời các câu hỏi bằng AI.
-            <br><br><b>Mẹo:</b> Nhấp vào biểu tượng bánh răng ⚙️ để dán Gemini API Key nếu bạn muốn trò chuyện thông minh hơn!
-        </div>
-        <div class="typing-indicator" id="typing-indicator">
-            <span></span><span></span><span></span><span class="ai-loading-text">AI đang suy nghĩ...</span>
+            👋 <b>Xin chào! Chào mừng bạn đến với Hệ thống Trợ lý Học liệu Mầm Non.</b>
+            <br><br>Tôi là trợ lý ảo giúp bạn tìm nhanh các tài liệu giáo dục như:
+            <br>• <b>Bài giảng điện tử</b> (Khối MGL, MGN, MGB, Nhà trẻ)
+            <br>• <b>Giáo án chi tiết</b> các độ tuổi
+            <br>• <b>Ebook</b> (Sách thơ, Sách truyện cho bé)
+            <br>• <b>Phiếu bài tập, Video truyện tranh, Trò chơi...</b>
+            <br><br>Hãy nhập <b>Tên bài dạy</b> hoặc <b>Từ khóa</b> (vd: "con bướm", "mèo", "toán"...) để tôi tìm giúp nhé!
+            
+            <div class="quick-replies">
+                <button class="qr-btn" onclick="quickSearch('Bài giảng')">Bài giảng</button>
+                <button class="qr-btn" onclick="quickSearch('Giáo án')">Giáo án</button>
+                <button class="qr-btn" onclick="quickSearch('Ebook')">Ebook</button>
+                <button class="qr-btn" onclick="quickSearch('Phiếu bài tập')">Phiếu bài tập</button>
+            </div>
         </div>
     </div>
 
     <div class="chat-footer">
-        <input type="text" id="chat-input" class="chat-input" placeholder="Hỏi AI hoặc tìm tài liệu..." onkeypress="onKey(event)">
+        <input type="text" id="chat-input" class="chat-input" placeholder="Nhập tên bài hoặc từ khóa..." onkeypress="onKey(event)">
         <button class="send-btn" onclick="sendMessage()">
-            <svg style="width:20px;height:20px" viewBox="0 0 24 24" fill="currentColor">
+            <svg style="width:22px;height:22px" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
             </svg>
         </button>
@@ -2989,27 +2962,6 @@ const chatbotData = [
 
 const chatBody = document.getElementById('chat-body');
 const chatInput = document.getElementById('chat-input');
-const typingEl = document.getElementById('typing-indicator');
-const settingsPanel = document.getElementById('settings-panel');
-const apiKeyInput = document.getElementById('api-key-input');
-
-// Load API Key from local storage
-let GEMINI_API_KEY = localStorage.getItem('GEMINI_API_KEY') || '';
-if (GEMINI_API_KEY) apiKeyInput.value = GEMINI_API_KEY;
-
-function toggleSettings() {
-    settingsPanel.style.display = settingsPanel.style.display === 'block' ? 'none' : 'block';
-}
-
-function saveApiKey() {
-    const val = apiKeyInput.value.trim();
-    if (val) {
-        localStorage.setItem('GEMINI_API_KEY', val);
-        GEMINI_API_KEY = val;
-        alert('Đã lưu API Key thành công!');
-        settingsPanel.style.display = 'none';
-    }
-}
 
 function removeAccents(str) {
     if (!str) return '';
@@ -3019,115 +2971,88 @@ function removeAccents(str) {
 function onKey(e) { if (e.key === 'Enter') sendMessage(); }
 function scrollDown() { chatBody.scrollTop = chatBody.scrollHeight; }
 
-function showTyping() {
-    typingEl.style.display = 'block';
-    chatBody.appendChild(typingEl); scrollDown();
-}
-function hideTyping() { typingEl.style.display = 'none'; }
-
-function appendMessage(content, sender, isHTML=false, isAI=false) {
+function appendMessage(content, sender, isHTML=false) {
     const div = document.createElement('div');
-    div.className = 'message ' + sender + (isAI ? ' ai-tag' : '');
+    div.className = 'message ' + sender;
     if (isHTML) div.innerHTML = content;
-    else {
-        // Simple markdown code block replacement for AI
-        const formatted = content.replace(/```[\s\S]*?```/g, m => `<pre style="background:#f1f5f9;padding:5px;border-radius:5px;font-size:0.75rem;overflow-x:auto;">${m.replace(/```/g,'')}</pre>`);
-        div.innerHTML = formatted.replace(/\n/g, '<br>');
-    }
-    chatBody.insertBefore(div, typingEl);
+    else div.textContent = content;
+    chatBody.appendChild(div);
     scrollDown();
 }
 
 function search(query) {
     const q = removeAccents(query);
     const words = q.split(/\s+/).filter(w => w.length > 1);
-    if (!words.length) return [];
+    if (!words.length && q.length < 2) return [];
     
     const scored = chatbotData.map(item => {
         const haystack = removeAccents((item.title || '') + ' ' + (item.subject||'') + ' ' + (item.category||'') + ' ' + (item.nav||''));
         let score = 0;
-        if (haystack.includes(q)) score += 12;
-        words.forEach(w => { if (haystack.includes(w)) score += 2; });
+        // Match exact phrase
+        if (haystack.includes(q)) score += 15;
+        // Match words
+        words.forEach(w => {
+            if (haystack.includes(w)) score += 3;
+            if (haystack.split(/\s+/).some(t => t === w)) score += 2;
+        });
         return { item, score };
     }).filter(r => r.score > 0);
     
     scored.sort((a, b) => b.score - a.score);
-    return scored.slice(0, 3).map(r => r.item);
+    // Return more results for "full response"
+    return scored.slice(0, 5).map(r => r.item);
 }
 
 function buildResultHTML(results) {
-    let html = '<b>📂 Tài liệu tìm thấy trong kho:</b><br>';
+    let html = '<b>✅ Tôi đã tìm thấy ' + results.length + ' tài liệu phù hợp nhất cho bạn!</b><br>Dưới đây là thông tin chi tiết:<br><br>';
     results.forEach((item, i) => {
+        const navPath = item.nav || item.category;
         html += `<div class="result-card">
-            <div class="result-title-text">${item.title}</div>
-            <div class="result-category">${item.nav || item.category}</div>
+            <div class="result-num">Tài liệu số ${i+1}</div>
+            <div class="result-title-text">📌 ${item.title}</div>
+            <div class="result-category">📂 <b>Vị trí:</b> ${navPath}</div>
             <div class="search-name-box">
-                <b>🔍 Search trang:</b> <span class="search-name-val">${item.title}</span>
+                <b>🔍 Tên chính xác trên trang web:</b>
+                <span class="search-name-val">${item.title}</span>
             </div>
-            <a class="result-link" href="${item.link}" target="_blank">Mở trang →</a>
+            <div class="step-guide">
+                <div class="step"><span class="step-num">1</span><span>Nhấn nút xanh phía dưới để <b>mở trang học liệu</b>.</span></div>
+                <div class="step"><span class="step-num">2</span><span>Trên trang web vừa mở, nhấn phím <b>Ctrl + F</b> (nếu dùng máy tính) hoặc chọn "Tìm trong trang" (trên điện thoại).</span></div>
+                <div class="step"><span class="step-num">3</span><span>Nhập tên <b>"${item.title}"</b> để tìm đúng vị trí bài học.</span></div>
+            </div>
+            <a class="result-link" href="${item.link}" target="_blank">👉 TRUY CẬP TRANG HỌC LIỆU →</a>
         </div>`;
     });
+    html += '<small style="color:var(--text-muted)"><i>💡 Nếu chưa thấy bài mong muốn, bạn hãy thử tìm với từ khóa khác ngắn gọn hơn nhé!</i></small>';
     return html;
 }
 
-async function askGemini(question, context) {
-    if (!GEMINI_API_KEY) return "Vui lòng cài đặt API Key trong nút ⚙️ để sử dụng tính năng AI.";
-    
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-    
-    const prompt = `Bạn là trợ lý ảo cho Kho Học Liệu Số Mầm Non Liên Hà.
-Ngữ cảnh (Các tài liệu có sẵn): ${JSON.stringify(context)}
-Người dùng hỏi: "${question}"
-Nhiệm vụ: 
-1. Nếu câu hỏi liên quan đến tìm bài cụ thể, hãy tư vấn dựa trên danh sách tài liệu. 
-2. Nếu là câu hỏi kiến thức sư phạm mầm non, hãy trả lời chuyên nghiệp và dễ hiểu.
-3. Trả lời bằng tiếng Việt, ngắn gọn, súc tích.`;
-
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }]
-            })
-        });
-        const data = await response.json();
-        return data.candidates[0].content.parts[0].text;
-    } catch (err) {
-        console.error(err);
-        return "⚠️ Có lỗi xảy ra khi kết nối với AI. Vui lòng kiểm tra lại API Key.";
-    }
+function quickSearch(txt) {
+    chatInput.value = txt;
+    sendMessage();
 }
 
-async function sendMessage() {
+function sendMessage() {
     const text = chatInput.value.trim();
     if (!text) return;
-
-    appendMessage(text, 'user');
-    chatInput.value = '';
-    showTyping();
-
-    // 1. Search Database First
-    const results = search(text);
     
-    // 2. Decide response
-    setTimeout(async () => {
-        if (results.length > 0) {
-            appendMessage(buildResultHTML(results), 'bot', true);
-        }
-
-        if (GEMINI_API_KEY) {
-            // Ask AI for more context/answers
-            const aiResponse = await askGemini(text, results);
-            hideTyping();
-            appendMessage(aiResponse, 'bot', false, true);
-        } else {
-            hideTyping();
-            if (results.length === 0) {
-                appendMessage("😔 Tôi không tìm thấy tài liệu này. (Cần cài đặt AI Key để hỏi đáp thông minh hơn)", "bot");
-            }
-        }
-    }, 500);
+    // Check if greeting
+    const t = text.toLowerCase();
+    if (t === 'bài giảng' || t === 'giáo án' || t === 'ebook' || t === 'phiếu bài tập') {
+       appendMessage(text, 'user');
+    } else {
+       appendMessage(text, 'user');
+    }
+    
+    chatInput.value = '';
+    
+    // Instant response (no "API delay")
+    const results = search(text);
+    if (results.length > 0) {
+        appendMessage(buildResultHTML(results), 'bot', true);
+    } else {
+        appendMessage(`😔 Tôi rất tiếc, hiện tại tôi chưa tìm thấy tài liệu nào có tiêu đề "${text}" trong kho. Bạn vui lòng thử tìm với tên bài ngắn gọn hơn (ví dụ: chỉ gõ "Hoa", "Nước", "Tết"...) để có nhiều kết quả hơn nhé!`, 'bot');
+    }
 }
 </script>
 </body>
