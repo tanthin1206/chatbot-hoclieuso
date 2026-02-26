@@ -11,152 +11,201 @@
             --primary-light: #818CF8;
             --primary-dark: #3730A3;
             --accent: #06B6D4;
-            --bg-page: #F0F4FF;
+            --bg-page: transparent;
             --bg-chat: #FFFFFF;
             --text-main: #111827;
             --text-muted: #6B7280;
             --user-bg: #4F46E5;
             --bot-bg: #F3F4F6;
             --border: #E5E7EB;
-            --shadow: 0 10px 30px rgba(79,70,229,0.15);
+            --shadow: 0 10px 40px rgba(0,0,0,0.15);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg-page); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 12px; }
+        
+        body { 
+            background: var(--bg-page); 
+            height: 100vh; 
+            width: 100vw; 
+            overflow: hidden; 
+            position: relative;
+        }
 
+        /* Launcher Bubble */
+        #chat-launcher {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, #4338CA 0%, #6366F1 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(67, 56, 202, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+        }
+        #chat-launcher:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        #chat-launcher svg {
+            width: 30px;
+            height: 30px;
+            color: white;
+        }
+
+        /* Main Chatbot Widget */
         #chatbot-widget {
-            width: 100%; max-width: 420px; height: 620px; max-height: 95vh;
-            background: var(--bg-chat); border-radius: 24px;
-            box-shadow: var(--shadow); display: flex; flex-direction: column;
-            overflow: hidden; border: 1px solid rgba(79,70,229,0.15);
+            position: fixed;
+            bottom: 95px;
+            right: 20px;
+            width: calc(100% - 40px);
+            max-width: 400px;
+            height: 600px;
+            max-height: calc(100vh - 120px);
+            background: var(--bg-chat);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            display: none; /* Initially hidden */
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1001;
+            transform-origin: bottom right;
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         /* HEADER */
         .chat-header {
             background: linear-gradient(135deg, #4338CA 0%, #6366F1 50%, #818CF8 100%);
-            color: white; padding: 18px 20px; display: flex; align-items: center; gap: 12px;
+            color: white; padding: 15px 20px; display: flex; align-items: center; gap: 12px;
+            position: relative;
         }
         .header-avatar {
-            width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.2);
-            display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+            width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.2);
+            display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
         }
         .header-info { flex: 1; }
-        .header-name { font-size: 1rem; font-weight: 700; }
-        .header-status { font-size: 0.78rem; opacity: 0.85; display: flex; align-items: center; gap: 5px; margin-top: 2px; }
-        .status-dot { width: 7px; height: 7px; background: #86EFAC; border-radius: 50%; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .header-name { font-size: 0.95rem; font-weight: 700; }
+        .header-status { font-size: 0.72rem; opacity: 0.85; display: flex; align-items: center; gap: 5px; }
+        .status-dot { width: 6px; height: 6px; background: #86EFAC; border-radius: 50%; }
+        
+        .close-btn {
+            background: transparent; border: none; color: white; opacity: 0.6; cursor: pointer; padding: 5px;
+            transition: opacity 0.2s;
+        }
+        .close-btn:hover { opacity: 1; }
 
         /* BODY */
         .chat-body {
             flex: 1; padding: 16px; overflow-y: auto;
-            display: flex; flex-direction: column; gap: 12px; background: var(--bg-page);
+            display: flex; flex-direction: column; gap: 12px; background: #F8FAFC;
         }
-        .chat-body::-webkit-scrollbar { width: 5px; }
+        .chat-body::-webkit-scrollbar { width: 4px; }
         .chat-body::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
 
         /* MESSAGES */
         .message {
-            max-width: 88%; padding: 11px 15px; border-radius: 18px; font-size: 0.9rem;
+            max-width: 85%; padding: 11px 15px; border-radius: 18px; font-size: 0.88rem;
             line-height: 1.5; animation: popIn 0.25s ease-out; word-wrap: break-word;
         }
         @keyframes popIn {
             from { opacity: 0; transform: translateY(8px) scale(0.98); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .message.bot { align-self: flex-start; background: var(--bg-chat); color: var(--text-main); border-bottom-left-radius: 5px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+        .message.bot { align-self: flex-start; background: white; color: var(--text-main); border-bottom-left-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
         .message.user { align-self: flex-end; background: var(--user-bg); color: white; border-bottom-right-radius: 5px; }
-        .message.bot a { color: var(--primary); font-weight: 600; text-decoration: none; }
-        .message.bot a:hover { text-decoration: underline; }
 
         /* RESULT CARD */
         .result-card {
-            background: white;
-            border: 1.5px solid #C7D2FE; border-radius: 14px;
-            padding: 14px 16px; margin: 6px 0;
-            box-shadow: 0 2px 8px rgba(79,70,229,0.08);
+            background: white; border: 1px solid #E2E8F0; border-radius: 12px;
+            padding: 12px; margin: 4px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.03);
         }
-        .result-num { font-size: 0.68rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
-        .result-title-text { font-weight: 700; color: var(--text-main); font-size: 0.95rem; margin-bottom: 4px; }
-        .result-category { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; }
-        /* Name to search box */
+        .result-num { font-size: 0.65rem; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 4px; }
+        .result-title-text { font-weight: 700; color: var(--text-main); font-size: 0.9rem; margin-bottom: 4px; }
+        .result-category { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; }
+        
         .search-name-box {
-            background: #FEF9C3; border: 1.5px dashed #FACC15;
-            border-radius: 8px; padding: 7px 10px; margin-bottom: 10px;
-            font-size: 0.82rem; color: #713F12;
+            background: #FFFBEB; border: 1px dashed #F59E0B;
+            border-radius: 8px; padding: 6px 10px; margin-bottom: 8px;
+            font-size: 0.8rem;
         }
-        .search-name-box b { display: block; margin-bottom: 2px; color: #92400E; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
-        .search-name-val { font-weight: 700; font-size: 0.88rem; color: #1C1917; word-break: break-word; }
-        /* Steps */
-        .step-guide { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
-        .step { display: flex; align-items: flex-start; gap: 7px; font-size: 0.8rem; color: #374151; }
-        .step-num { flex-shrink: 0; width: 18px; height: 18px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 700; margin-top: 1px; }
-        /* Link button */
-        .result-link { display: flex; align-items: center; justify-content: center; gap: 7px; background: #16A34A; color: white; padding: 10px 18px; border-radius: 22px; font-size: 0.88rem; font-weight: 700; text-decoration: none; transition: all 0.2s; box-shadow: 0 3px 10px rgba(22,163,74,0.35); text-align: center; }
-        .result-link:hover { background: #15803D; transform: translateY(-1px); box-shadow: 0 5px 15px rgba(22,163,74,0.4); }
+        .search-name-val { font-weight: 700; color: #92400E; display: block; }
 
-        /* QUICK REPLIES */
-        .quick-replies { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
-        .qr-btn {
-            background: white; border: 1.5px solid #C7D2FE; color: var(--primary);
-            padding: 7px 13px; border-radius: 20px; font-size: 0.82rem; cursor: pointer;
-            transition: all 0.2s; white-space: nowrap; font-family: 'Inter', sans-serif;
-        }
-        .qr-btn:hover { background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-1px); }
+        .step-guide { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+        .step { display: flex; align-items: flex-start; gap: 6px; font-size: 0.76rem; color: #4B5563; }
+        .step-num { flex-shrink: 0; width: 16px; height: 16px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; }
 
-        /* TYPING */
-        .typing-indicator {
-            display: none; align-self: flex-start; background: var(--bg-chat);
-            padding: 13px 17px; border-radius: 18px; border-bottom-left-radius: 5px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+        .result-link { 
+            display: flex; align-items: center; justify-content: center; gap: 6px; 
+            background: #16A34A; color: white; padding: 8px 15px; border-radius: 20px; 
+            font-size: 0.82rem; font-weight: 700; text-decoration: none; transition: background 0.2s; 
         }
-        .typing-indicator span {
-            display: inline-block; width: 7px; height: 7px; background: #9CA3AF;
-            border-radius: 50%; margin: 0 2px;
-            animation: bounce 1.4s infinite ease-in-out both;
-        }
-        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounce { 0%,80%,100% { transform: scale(0); } 40% { transform: scale(1); } }
+        .result-link:hover { background: #15803D; }
 
         /* INPUT */
         .chat-footer {
-            padding: 14px 16px; background: var(--bg-chat);
-            border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: center;
+            padding: 12px 16px; background: white;
+            border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: center;
         }
         .chat-input {
-            flex: 1; padding: 11px 16px; border: 1.5px solid var(--border); border-radius: 22px;
-            font-size: 0.92rem; outline: none; transition: border-color 0.2s; background: var(--bg-page);
-            font-family: 'Inter', sans-serif; color: var(--text-main);
+            flex: 1; padding: 10px 15px; border: 1px solid var(--border); border-radius: 20px;
+            font-size: 0.88rem; outline: none; background: #F8FAFC;
         }
         .chat-input:focus { border-color: var(--primary); background: white; }
         .send-btn {
             background: var(--primary); color: white; border: none;
-            width: 44px; height: 44px; border-radius: 50%;
+            width: 40px; height: 40px; border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
-            cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(79,70,229,0.35); flex-shrink: 0;
+            cursor: pointer; flex-shrink: 0;
         }
-        .send-btn:hover { background: var(--primary-dark); transform: scale(1.08); }
-        .send-btn svg { width: 19px; height: 19px; margin-left: 2px; }
+
+        /* TYPING */
+        .typing-indicator {
+            display: none; align-self: flex-start; background: white;
+            padding: 12px 16px; border-radius: 18px; border-bottom-left-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .typing-indicator span { display: inline-block; width: 6px; height: 6px; background: #9CA3AF; border-radius: 50%; margin: 0 1px; animation: bounce 1.4s infinite ease-in-out both; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.16s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.32s; }
+        @keyframes bounce { 0%,80%,100% { transform: scale(0); } 40% { transform: scale(1); } }
     </style>
 </head>
 <body>
+
+<!-- Launcher -->
+<div id="chat-launcher" onclick="toggleChat()">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+    </svg>
+</div>
+
+<!-- Widget -->
 <div id="chatbot-widget">
     <div class="chat-header">
         <div class="header-avatar">🎓</div>
         <div class="header-info">
             <div class="header-name">Trợ lý Kho Học Liệu</div>
-            <div class="header-status">
-                <span class="status-dot"></span> Mầm non Liên Hà · Sẵn sàng hỗ trợ
-            </div>
+            <div class="header-status"><span class="status-dot"></span> Đang trực tuyến</div>
         </div>
+        <button class="close-btn" onclick="toggleChat()">
+            <svg style="width:24px;height:24px" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+            </svg>
+        </button>
     </div>
 
     <div class="chat-body" id="chat-body">
         <div class="message bot">
-            👋 Xin chào! Tôi là trợ lý ảo kho học liệu trường mầm non. Tôi có thể giúp bạn tìm:<br>
-            📚 Bài giảng điện tử (4 khối) &nbsp;·&nbsp; 📋 Giáo án<br>
-            📖 Ebook thơ &amp; truyện &nbsp;·&nbsp; 📄 Phiếu bài tập<br>
-            🎬 Video &amp; Truyện tranh tiềm thức<br><br>
-            Hãy nhập tên bài hoặc chủ đề cần tìm vào ô bên dưới nhé!
+            👋 Xin chào! Tôi có thể giúp tìm bài giảng, giáo án, ebook và video trong kho học liệu.
+            <br><br>Hãy nhập tên bài hoặc chủ đề bạn cần tìm nhé!
         </div>
         <div class="typing-indicator" id="typing-indicator">
             <span></span><span></span><span></span>
@@ -164,18 +213,17 @@
     </div>
 
     <div class="chat-footer">
-        <input type="text" id="chat-input" class="chat-input"
-            placeholder="Nhập tên bài giảng, chủ đề..." onkeypress="onKey(event)">
+        <input type="text" id="chat-input" class="chat-input" placeholder="Tìm kiếm tài liệu..." onkeypress="onKey(event)">
         <button class="send-btn" onclick="sendMessage()">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+            <svg style="width:20px;height:20px" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
             </svg>
         </button>
     </div>
 </div>
 
 <script>
-// ===== DATABASE (AUTO-GENERATED) =====
+// ===== DATABASE =====
 const chatbotData = [
   {
     "category": "Bài giảng điện tử - MGL (5-6 tuổi)",
@@ -2965,19 +3013,33 @@ const chatbotData = [
   }
 ];
 
-// =====================================
+// ====================
 
+const chatLauncher = document.getElementById('chat-launcher');
+const chatWidget = document.getElementById('chatbot-widget');
 const chatBody = document.getElementById('chat-body');
 const chatInput = document.getElementById('chat-input');
 const typingEl = document.getElementById('typing-indicator');
+
+let isChatOpen = false;
+
+function toggleChat() {
+    isChatOpen = !isChatOpen;
+    if (isChatOpen) {
+        chatWidget.style.display = 'flex';
+        chatLauncher.style.transform = 'scale(0)';
+        setTimeout(() => chatInput.focus(), 300);
+    } else {
+        chatWidget.style.display = 'none';
+        chatLauncher.style.transform = 'scale(1)';
+    }
+}
 
 function removeAccents(str) {
     return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 }
 
-function sendQuick(text) { chatInput.value = text; sendMessage(); }
 function onKey(e) { if (e.key === 'Enter') sendMessage(); }
-
 function scrollDown() { chatBody.scrollTop = chatBody.scrollHeight; }
 
 function showTyping() {
@@ -2995,74 +3057,44 @@ function appendMessage(content, sender, isHTML=false) {
     scrollDown();
 }
 
-// Smart search: score each item
 function search(query) {
     const q = removeAccents(query);
     const words = q.split(/\s+/).filter(w => w.length > 1);
     if (!words.length) return [];
-
+    
     const scored = chatbotData.map(item => {
-        const haystack = removeAccents(
-            item.title + ' ' + item.subject + ' ' + item.category + ' ' + (item.nav || '')
-        );
+        const haystack = removeAccents(item.title + ' ' + (item.subject||'') + ' ' + (item.nav||''));
         let score = 0;
-        // Full query match = highest
         if (haystack.includes(q)) score += 12;
         words.forEach(w => {
             if (haystack.includes(w)) score += 2;
-            // partial match (starts with)
-            if (haystack.split(/\s+/).some(t => t.startsWith(w))) score += 1;
         });
         return { item, score };
     }).filter(r => r.score > 0);
-
+    
     scored.sort((a, b) => b.score - a.score);
     return scored.slice(0, 3).map(r => r.item);
 }
 
 function buildResultHTML(results) {
-    let html = '<b>✅ Tìm thấy ' + results.length + ' kết quả!</b> Làm theo hướng dẫn từng bước dưới đây:<br><br>';
+    let html = '<b>✅ Tìm thấy ' + results.length + ' kết quả:</b><br><br>';
     results.forEach((item, i) => {
-        const catDisplay = item.nav || item.category;
-        const subDisplay = item.subject ? ` · ${item.subject}` : '';
         html += `<div class="result-card">
             <div class="result-num">Kết quả ${i+1}</div>
             <div class="result-title-text">📌 ${item.title}</div>
-            <div class="result-category">📂 ${catDisplay}${subDisplay}</div>
+            <div class="result-category">📂 ${item.nav || item.category}</div>
             <div class="search-name-box">
-                <b>🔍 Tên cần tìm trên trang:</b>
+                <b>🔍 Tìm trên trang:</b>
                 <span class="search-name-val">${item.title}</span>
             </div>
             <div class="step-guide">
-                <div class="step"><span class="step-num">1</span><span>Nhấn nút xanh để <b>mở trang danh mục</b> bên dưới</span></div>
-                <div class="step"><span class="step-num">2</span><span>Trong trang vừa mở, nhấn <b>Ctrl+F</b> (máy tính) hoặc <b>tìm trong trang</b> (điện thoại)</span></div>
-                <div class="step"><span class="step-num">3</span><span>Gõ tên bài <b>"${item.title}"</b> vào ô tìm để đến đúng vị trí</span></div>
+                <div class="step"><span class="step-num">1</span><span>Nhấn nút xanh để mở trang</span></div>
+                <div class="step"><span class="step-num">2</span><span>Nhấn <b>Ctrl+F</b> để tìm tên bài</span></div>
             </div>
-            <a class="result-link" href="${item.link}" target="_blank">🟢 Bước 1: Mở trang danh mục →</a>
+            <a class="result-link" href="${item.link}" target="_blank">🟢 Mở trang Học liệu →</a>
         </div>`;
     });
     return html;
-}
-
-function processQuery(text) {
-    const t = text.toLowerCase().trim();
-    // Greet
-    if (/^(xin chào|chào|hi|hello|chào bot)/.test(t)) {
-        return { isHTML: false, reply: 'Xin chào! Bạn muốn tìm tài liệu gì trong kho học liệu hôm nay ạ? 😊' };
-    }
-    if (/^(cảm ơn|cam on|thanks)/.test(t)) {
-        return { isHTML: false, reply: 'Bạn không cần khách khí! Nếu cần tìm thêm tài liệu nào khác, cứ hỏi mình nhé 😊' };
-    }
-    // Search
-    const results = search(text);
-    if (results.length > 0) {
-        return { isHTML: true, reply: buildResultHTML(results) };
-    }
-    // Not found
-    return {
-        isHTML: false,
-        reply: `😔 Mình chưa tìm thấy tài liệu khớp với "${text}". Bạn thử gõ ngắn hơn, ví dụ: "toán", "văn học", "khám phá", "tạo hình"... nhé!`
-    };
 }
 
 function sendMessage() {
@@ -3071,12 +3103,15 @@ function sendMessage() {
     appendMessage(text, 'user');
     chatInput.value = '';
     showTyping();
-    const delay = 700 + Math.random() * 500;
     setTimeout(() => {
         hideTyping();
-        const { isHTML, reply } = processQuery(text);
-        appendMessage(reply, 'bot', isHTML);
-    }, delay);
+        const results = search(text);
+        if (results.length > 0) {
+            appendMessage(buildResultHTML(results), 'bot', true);
+        } else {
+            appendMessage(`😔 Xin lỗi, tôi không tìm thấy bài nào khớp với "${text}". Hãy thử lại với từ khóa ngắn hơn.`, 'bot');
+        }
+    }, 800);
 }
 </script>
 </body>
